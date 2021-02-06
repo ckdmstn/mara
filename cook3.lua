@@ -17,16 +17,16 @@ local background -- 주방화면
 local leftUI = {} -- 1: 금액표시창, 2:금액표시
 local rightUI = {} -- 1:화면전환
 local gameUI = {} -- 1:김밥말기, 2:버리기, 3:김밥을 쌀 수 없습니다.
-local IG = {} -- 밥, 김, 달걀, 단무지, 햄
-local usedIG = {} -- 밥, 김, 달걀, 단무지, 햄
-local kimbap = {} -- 1:꼬마김밥, 2:다른김밥
+local IG = {} -- 밥, 김, 달걀, 단무지, 햄, 김치, 참치
+local usedIG = {} -- 밥, 김, 달걀, 단무지, 햄, 김치, 참치
+local kimbap = {} -- 1:꼬마김밥, 2:김치김밥, 3:참치김밥
 
 
 
 function scene:create( event )
 	local sceneGroup = self.view
     
-    background = display.newImageRect("img/kitchen.png", display.contentWidth, display.contentHeight)
+    background = display.newImageRect("img/kitchen3.png", display.contentWidth, display.contentHeight)
     background.x, background.y = display.contentWidth/2, display.contentHeight/2
 
     rightUI[1] = display.newImageRect("img/back_arrow.png", 70, 70)
@@ -57,12 +57,12 @@ function scene:create( event )
     IG[5] = display.newImageRect("img/ham1.png", 260, 95)
     IG[6] = display.newImageRect("img/kimchi.png", 260, 95)
     IG[7] = display.newImageRect("img/tuna.png", 260, 95)
-    for i = 2, 5, 1 do
+    for i = 2, 5, 1 do -- 김, 달걀, 단무지, 햄
         IG[i].x, IG[i].y = 130, display.contentHeight-45 - (i-2)*145
         IG[i].name = i
     end
-    for i = 6, 7, 1 do
-        IG[i].x, IG[i].y = 1130, IG[5].y + (i-6)*145
+    for i = 6, 7, 1 do -- 김치, 참치
+        IG[i].x, IG[i].y = 1150, display.contentHeight-45 - (i-6)*150
         IG[i].name = i
     end
     
@@ -151,12 +151,14 @@ function scene:create( event )
             kimbap[1]:addEventListener("tap", putKimbap)
             kimbap[1]:addEventListener("tap", toCounter)
             kimbap[1]:addEventListener("tap", delAll)
+            
         elseif (usedIG[1].alpha == 1 and usedIG[2].alpha == 1 and usedIG[3].alpha == 1 and usedIG[4].alpha == 1 and usedIG[5].alpha == 1 and usedIG[6].alpha == 1 and usedIG[7].alpha == 0) then
             for i = 1, 6, 1 do usedIG[i].alpha = 0 end
             kimbap[2].alpha = 1
             kimbap[2]:addEventListener("tap", putKimbap)
             kimbap[2]:addEventListener("tap", toCounter)
             kimbap[2]:addEventListener("tap", delAll)
+
         elseif (usedIG[1].alpha == 1 and usedIG[2].alpha == 1 and usedIG[3].alpha == 1 and usedIG[4].alpha == 1 and usedIG[5].alpha == 1 and usedIG[6].alpha == 0 and usedIG[7].alpha == 1) then
             for i = 1, 7, 1 do usedIG[i].alpha = 0 end
             kimbap[3].alpha = 1
@@ -210,7 +212,7 @@ function scene:hide( event )
 	
 	if event.phase == "will" then
 		-- Called when the scene is on screen and is about to move off screen
-		composer.removeScene("cook2")
+		composer.removeScene("cook3")
 		-- INSERT code here to pause the scene
 		-- e.g. stop timers, stop animation, unload sounds, etc.)
 	elseif phase == "did" then

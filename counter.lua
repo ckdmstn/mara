@@ -22,13 +22,15 @@ local calcKimbapMusic = audio.loadStream( "music/calcKimbap.mp3" )
 
 local backgroundMusicChannel = audio.play( backgroundMusic, { channel=1, loops=0, fadein=2000 } )
 -- 변수
+local currentstage = 1
+local score2 = 0
 money = 0
 
 -- GUI
 local background = {} -- 1:초등학교, 2:트럭
 local leftUI = {} -- 1:체력, 2:얼굴, 3:금액표시창, 4:금액표시
 local rightUI = {} -- 1:환경설정, 2:레시피토글, 3:화면전환, 4:레시피오픈
-local gameUI = {} -- 1:저금통, 2:저금통금액표시, 3:탁상달력,
+local gameUI = {} -- 1:저금통, 2:저금통금액표시
 local orderUI = {} -- 1:주문말풍선, 2:주문글, 3:주문수락, 4:주문거절
 local person = {} -- 초등학생1, 초등학생2, 초등학생3
 local kimbap = {}
@@ -44,7 +46,7 @@ function scene:create( event )
 	leftUI[1] = display.newImageRect("img/hp.png", 300, 30)
 	leftUI[1].x, leftUI[1].y = 220, 40
 	leftUI[2] = display.newImageRect("img/mara.png", 60, 60)
-	leftUI[2].x, leftUI[2].y = 50, 40
+	leftUI[2].x, leftUI[2].y = 60, 40
 	leftUI[3] = display.newImageRect("img/money.png", 350, 60)
 	leftUI[3].x, leftUI[3].y = 200, 100
 	leftUI[4] = display.newText("0원", 180, 107, "굴림")
@@ -69,8 +71,6 @@ function scene:create( event )
 	gameUI[2].size = 30
 	gameUI[2]:setFillColor(0)
 	gameUI[2].alpha = 1
-	gameUI[3] = display.newImageRect("img/calendar.png", 130, 130)
-	gameUI[3].x, gameUI[3].y = 130, display.contentHeight - 100
 
 	orderUI[1] = display.newImageRect("img/bubble.png", 500, 250)
 	orderUI[1].x, orderUI[1].y = 850, 250
@@ -91,7 +91,7 @@ function scene:create( event )
 		person[i].alpha = 0 
 	end
 
-	kimbap[1] = display.newImageRect("img/kimbap1.png", 300, 100)
+	kimbap[1] = display.newImageRect("img/kimbap.png", 300, 100)
 	kimbap[2] = display.newImageRect("img/kimbap2.png", 300, 100)
 	for i = 1, 2, 1 do
 		kimbap[i].x, kimbap[i].y = display.contentWidth/2, display.contentHeight - 100
@@ -102,15 +102,15 @@ function scene:create( event )
 
 	-- [[함수]]
 	local function playClickMusic()
-		local clickMusicChannel = audio.play( clickMusic, { channel=2, loops=0} )
+		local clickMusicChannel = audio.play( clickMusic, { channel=3, loops=0} )
 	end
 
 	local function playClacKimbap()
-		local calcKimbapMusicChannel = audio.play( calcKimbapMusic, { channel=2, loops=0} )
+		local calcKimbapMusicChannel = audio.play( calcKimbapMusic, { channel=3, loops=0} )
 	end
 
 	local function playDenyMusic()
-		local denyMusicChannel = audio.play( denyMusic, { channel=2, loops=0} )
+		local denyMusicChannel = audio.play( denyMusic, { channel=3, loops=0} )
 	end
 
 	local function pauseBG()
@@ -130,7 +130,17 @@ function scene:create( event )
 	function hp() -- 체력감소함수
 		if leftUI[1].width <= 0 then
 			pauseBG()
-			composer.gotoScene("levelup")
+			for i = 1, 4, 1 do leftUI[i].alpha = 0 end
+			for i = 1, 4, 1 do rightUI[i].alpha = 0 end
+			composer.setVariable("currentstage", currentstage)
+			if money > 2000 then
+				composer.setVariable("money", money)
+				composer.setVariable("textScore", money)
+			else
+				composer.setVariable("money", score2)
+				composer.setVariable("textScore", money)
+			end
+			composer.gotoScene("map")
 		end
 		leftUI[1].width = leftUI[1].width - 10
 		leftUI[1].x = leftUI[1].x - 5
@@ -213,7 +223,7 @@ function scene:create( event )
 
 	-- 장면 삽입
 	for i = 1, 2, 1 do sceneGroup:insert(background[i]) end
-	for i = 1, 3, 1 do sceneGroup:insert(gameUI[i]) end
+	for i = 1, 2, 1 do sceneGroup:insert(gameUI[i]) end
 	sceneGroup:insert(rightUI[3])
 	for i = 1, 3, 1 do sceneGroup:insert(person[i]) end
 	sceneGroup:insert(leftUI[3])

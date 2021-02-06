@@ -26,7 +26,7 @@ local kimbap = {} -- 1:꼬마김밥, 2:다른김밥
 function scene:create( event )
 	local sceneGroup = self.view
     
-    background = display.newImageRect("img/kitchen.png", display.contentWidth, display.contentHeight)
+    background = display.newImageRect("img/kitchen4.png", display.contentWidth, display.contentHeight)
     background.x, background.y = display.contentWidth/2, display.contentHeight/2
 
     rightUI[1] = display.newImageRect("img/back_arrow.png", 70, 70)
@@ -63,7 +63,7 @@ function scene:create( event )
         IG[i].name = i
     end
     for i = 6, 8, 1 do
-        IG[i].x, IG[i].y = 1130, IG[5].y + (i-6)*145
+        IG[i].x, IG[i].y = 1150, display.contentHeight-45 - (i-6)*150
         IG[i].name = i
     end
     
@@ -154,18 +154,24 @@ function scene:create( event )
             kimbap[1]:addEventListener("tap", putKimbap)
             kimbap[1]:addEventListener("tap", toCounter)
             kimbap[1]:addEventListener("tap", delAll)
+
+        -- 김치김밥: 김, 밥, 달걀, 단무지, 햄, 김치
         elseif (usedIG[1].alpha == 1 and usedIG[2].alpha == 1 and usedIG[3].alpha == 1 and usedIG[4].alpha == 1 and usedIG[5].alpha == 1 and usedIG[6].alpha == 1 and usedIG[7].alpha == 0 and usedIG[8].alpha == 0) then
             for i = 1, 8, 1 do usedIG[i].alpha = 0 end
             kimbap[2].alpha = 1
             kimbap[2]:addEventListener("tap", putKimbap)
             kimbap[2]:addEventListener("tap", toCounter)
             kimbap[2]:addEventListener("tap", delAll)
+
+        -- 참치김밥: 김, 밥, 달걀, 단무지, 햄, 참치
         elseif (usedIG[1].alpha == 1 and usedIG[2].alpha == 1 and usedIG[3].alpha == 1 and usedIG[4].alpha == 1 and usedIG[5].alpha == 1 and usedIG[6].alpha == 0 and usedIG[7].alpha == 1 and usedIG[8].alpha == 0) then
             for i = 1, 8, 1 do usedIG[i].alpha = 0 end
             kimbap[3].alpha = 1
             kimbap[3]:addEventListener("tap", putKimbap)
             kimbap[3]:addEventListener("tap", toCounter)
             kimbap[3]:addEventListener("tap", delAll)
+
+        -- 새우김밥: 김, 밥, 달걀, 단무지, 햄, 새우
         elseif (usedIG[1].alpha == 1 and usedIG[2].alpha == 1 and usedIG[3].alpha == 1 and usedIG[4].alpha == 1 and usedIG[5].alpha == 1 and usedIG[6].alpha == 0 and usedIG[7].alpha == 0 and usedIG[8].alpha == 1) then
             for i = 1, 8, 1 do usedIG[i].alpha = 0 end
             kimbap[4].alpha = 1
@@ -219,7 +225,7 @@ function scene:hide( event )
 	
 	if event.phase == "will" then
 		-- Called when the scene is on screen and is about to move off screen
-		composer.removeScene("cook2")
+		composer.removeScene("cook4")
 		-- INSERT code here to pause the scene
 		-- e.g. stop timers, stop animation, unload sounds, etc.)
 	elseif phase == "did" then

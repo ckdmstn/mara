@@ -1,6 +1,6 @@
 -----------------------------------------------------------------------------------------
 --
--- cook.lua
+-- view1.lua
 --
 -----------------------------------------------------------------------------------------
 
@@ -72,7 +72,7 @@ function scene:create( event )
     for i = 1, 5, 1 do usedIG[i].alpha = 0 end -- 숨김처리
 
     -- 완성된 김밥
-    kimbap[1] = display.newImageRect("img/kimbap1.png", 500, 150)
+    kimbap[1] = display.newImageRect("img/kimbap.png", 500, 150)
     kimbap[2] = display.newImageRect("img/kimbap2.png", 500, 150)
     for i = 1, 2, 1 do
         kimbap[i].x, kimbap[i].y = display.contentWidth/2 + 35, display.contentHeight/2 + 40
@@ -84,15 +84,15 @@ function scene:create( event )
     
     -- [[함수]]
     local function playCalcIGMusic()
-        local calcIGMusicChannel = audio.play( calcIGMusic, { channel=4, loops=0} )    
+        local calcIGMusicChannel = audio.play( calcIGMusic, { channel=3, loops=0} )    
     end
 
     local function playDelAllMusic()
-        local delAllMusicChannel = audio.play(delAllMusic, {channel = 4, loops=0})
+        local delAllMusicChannel = audio.play(delAllMusic, {channel = 3, loops=0})
     end
 
     local function playMakeKimbapMusic()
-        local makeKimbapMusicChannel = audio.play(makeKimbapMusic, {channel = 4, loops = 0})
+        local makeKimbapMusicChannel = audio.play(makeKimbapMusic, {channel = 3, loops = 0})
     end
 
     local function toCounter() -- 카운터화면으로 이동

@@ -26,7 +26,7 @@ local kimbap = {} -- 1:꼬마김밥, 2:다른김밥
 function scene:create( event )
 	local sceneGroup = self.view
     
-    background = display.newImageRect("img/kitchen.png", display.contentWidth, display.contentHeight)
+    background = display.newImageRect("img/kitchen5.png", display.contentWidth, display.contentHeight)
     background.x, background.y = display.contentWidth/2, display.contentHeight/2
 
     rightUI[1] = display.newImageRect("img/back_arrow.png", 70, 70)
@@ -64,7 +64,7 @@ function scene:create( event )
         IG[i].name = i
     end
     for i = 6, 9, 1 do
-        IG[i].x, IG[i].y = 1130, IG[5].y + (i-6)*145
+        IG[i].x, IG[i].y = 1150, display.contentHeight-45 - (i-6)*150
         IG[i].name = i
     end
     
@@ -228,7 +228,7 @@ function scene:hide( event )
 	
 	if event.phase == "will" then
 		-- Called when the scene is on screen and is about to move off screen
-		composer.removeScene("cook2")
+		composer.removeScene("cook5")
 		-- INSERT code here to pause the scene
 		-- e.g. stop timers, stop animation, unload sounds, etc.)
 	elseif phase == "did" then

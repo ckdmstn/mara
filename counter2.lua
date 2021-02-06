@@ -20,23 +20,26 @@ local clickMusic = audio.loadStream( "music/click.mp3" )
 local denyMusic = audio.loadStream( "music/deny.wav" )
 local calcKimbapMusic = audio.loadStream( "music/calcKimbap.mp3" )
 
-local backgroundMusicChannel = audio.play( backgroundMusic, { channel=1, loops=0, fadein=2000 } )
+local backgroundMusicChannel = audio.play( backgroundMusic, { channel=2, loops=0, fadein=2000 } )
 -- 변수
-money = 0
+local score2 = composer.getVariable("score")
+money = composer.getVariable("score")
+--money = 3008
+local currentstage = 2
 
 -- GUI
 local background = {} -- 1:초등학교, 2:트럭
 local leftUI = {} -- 1:체력, 2:얼굴, 3:금액표시창, 4:금액표시
 local rightUI = {} -- 1:환경설정, 2:레시피토글, 3:화면전환, 4:레시피오픈
-local gameUI = {} -- 1:저금통, 2:저금통금액표시, 3:탁상달력,
-local orderUI = {} -- 1:주문말풍선, 2:주문글, 3:주문수락, 4:주문거절
+local gameUI = {} -- 1:저금통, 2:저금통금액표시
+local orderUI = {} -- 1:주문말풍선, 2:주문수락, 3:주문거절, 4:꼬마김밥주문, 5:김치김밥주문
 local person = {} -- 초등학생1, 초등학생2, 초등학생3
 local kimbap = {}
 
 function scene:create( event )
 	local sceneGroup = self.view
 
-	background[1] = display.newImageRect("img/elementaryschool.png", 1250, 460)
+	background[1] = display.newImageRect("img/middleschool.jpg", 1250, 460)
 	background[1].x, background[1].y = display.contentWidth/2, 290
 	background[2] = display.newImageRect("img/truck.png", display.contentWidth, display.contentHeight)
 	background[2].x, background[2].y = display.contentWidth/2, display.contentHeight/2
@@ -69,26 +72,25 @@ function scene:create( event )
 	gameUI[2].size = 30
 	gameUI[2]:setFillColor(0)
 	gameUI[2].alpha = 1
-	gameUI[3] = display.newImageRect("img/calendar.png", 130, 130)
-	gameUI[3].x, gameUI[3].y = 130, display.contentHeight - 100
 
 	orderUI[1] = display.newImageRect("img/bubble.png", 500, 250)
 	orderUI[1].x, orderUI[1].y = 850, 250
-	orderUI[2] = display.newImageRect("img/accept.png", 110, 50)
+	orderUI[2] = display.newImageRect("img/accept.png", 110, 50) 
 	orderUI[2].x, orderUI[2].y = 780, 300
 	orderUI[3] = display.newImageRect("img/deny.png", 110, 45)
-	orderUI[3].x, orderUI[3].y = 900, 301
+    orderUI[3].x, orderUI[3].y = 900, 301
+    -- 김밥 주문 종류
 	orderUI[4] = display.newText("마라선생님! \n꼬마김밥 주세요.", 850, 220, "굴림")
 	orderUI[4].size = 30
 	orderUI[4]:setFillColor(0)
-	orderUI[5] = display.newText("마라선생님! \n김치김밥 주세요.", 850, 220, "굴림")
+	orderUI[5] = display.newText("매운게 땡기는 날이야.\n김치김밥 주세요!", 850, 220, "굴림")
 	orderUI[5].size = 30
-	orderUI[5]:setFillColor(0)
+    orderUI[5]:setFillColor(0)
 	for i = 1, 5, 1 do orderUI[i].alpha = 0 end
 
-	person[1] = display.newImageRect("img/person1.png", 175, 205)
-	person[2] = display.newImageRect("img/person2.png", 175, 205)
-	person[3] = display.newImageRect("img/person3.png", 175, 205)
+	person[1] = display.newImageRect("img/mperson1.png", 200, 205)
+	person[2] = display.newImageRect("img/mperson2.png", 200, 205)
+	person[3] = display.newImageRect("img/mperson3.png", 200, 205)
 	for i = 1, 3, 1 do 
 		person[i].x, person[i].y = 500, 418
 		person[i].alpha = 0 
@@ -133,7 +135,17 @@ function scene:create( event )
 	function hp() -- 체력감소함수
 		if leftUI[1].width <= 0 then
 			pauseBG()
-			composer.gotoScene("levelup")
+            for i = 1, 4, 1 do leftUI[i].alpha = 0 end
+			for i = 1, 4, 1 do rightUI[i].alpha = 0 end
+			composer.setVariable("currentstage", currentstage)
+			if money > 5000 then
+				composer.setVariable("money", money)
+				composer.setVariable("textScore", money)
+			else
+				composer.setVariable("money", score2)
+				composer.setVariable("textScore", money)
+			end
+			composer.gotoScene("map")
 		end
 		leftUI[1].width = leftUI[1].width - 10
 		leftUI[1].x = leftUI[1].x - 5
@@ -181,7 +193,10 @@ function scene:create( event )
 			calcBank(2500)
 			leftUI[4].text = string.format("%d원", money)
 		else
-			print("메뉴 틀림")
+            print("메뉴 틀림")
+            playDenyMusic()
+            leftUI[1].width = leftUI[1].width - 20
+		    leftUI[1].x = leftUI[1].x - 10
 		end
 		
 		calcCounter()
@@ -224,7 +239,7 @@ function scene:create( event )
 
 	-- 장면 삽입
 	for i = 1, 2, 1 do sceneGroup:insert(background[i]) end
-	for i = 1, 3, 1 do sceneGroup:insert(gameUI[i]) end
+	for i = 1, 2, 1 do sceneGroup:insert(gameUI[i]) end
 	sceneGroup:insert(rightUI[3])
 	for i = 1, 3, 1 do sceneGroup:insert(person[i]) end
 	sceneGroup:insert(leftUI[3])
@@ -249,7 +264,8 @@ function scene:hide( event )
 	local sceneGroup = self.view
 	local phase = event.phase
 
-	if event.phase == "will" then
+    if event.phase == "will" then
+        composer.removeScene("map")
 	elseif phase == "did" then
 	end
 end

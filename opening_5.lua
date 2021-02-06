@@ -26,6 +26,8 @@ function scene:create( event )
     local function goGame( event )
         transition.to(UI[0][2], {alpha = 1})
             local function gotoGame( event )
+                Runtime:removeEventListener("key", keyEvent)
+                composer.removeScene("opening_5")
                 composer.gotoScene("counter")
             end
             tmr[0] = timer.performWithDelay(1500, gotoGame, 1)
@@ -117,10 +119,11 @@ function scene:create( event )
     local function nextScene( event )
         UI[2].alpha = 1
         local function keyEvent( event )
-            if event.keyName == "enter" or event.keyName == "space" then
+            if event.keyName == "space" then
                 Runtime:removeEventListener("key", keyEvent)
                 transition.to(UI[0][2], {alpha = 1})
                 local function Game( event )
+                    composer.removeScene("opening_5")
                     composer.gotoScene("counter")
                 end
                 tmr[8] = timer.performWithDelay(1500, Game, 1)
